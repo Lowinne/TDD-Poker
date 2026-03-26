@@ -11,29 +11,30 @@ import static org.assertj.core.api.Assertions.assertThat;
 class HandEvaluatorTest {
 
     @Test
-    void shouldIdentifyHighCardAndReturnTop5Cards() {
+    void shouldIdentifyOnePairAndReturnPairPlusTop3Kickers() {
         List<Card> sevenCards = List.of(
-                new Card(Rank.TWO, Suit.CLUBS),
-                new Card(Rank.ACE, Suit.SPADES),
                 new Card(Rank.JACK, Suit.CLUBS),
-                new Card(Rank.NINE, Suit.DIAMONDS),
+                new Card(Rank.TWO, Suit.SPADES),
+                new Card(Rank.JACK, Suit.HEARTS),
+                new Card(Rank.ACE, Suit.DIAMONDS),
                 new Card(Rank.KING, Suit.HEARTS),
-                new Card(Rank.FIVE, Suit.HEARTS),
-                new Card(Rank.SEVEN, Suit.SPADES)
+                new Card(Rank.FIVE, Suit.CLUBS),
+                new Card(Rank.NINE, Suit.SPADES)
         );
 
         HandEvaluator evaluator = new HandEvaluator();
 
         EvaluatedHand result = evaluator.evaluate(sevenCards);
 
-        assertThat(result.category()).isEqualTo(HandCategory.HIGH_CARD);
+        assertThat(result.category()).isEqualTo(HandCategory.ONE_PAIR);
 
+        // On attend : Les 2 Valets en premier, puis l'As, le Roi et le Neuf.
         assertThat(result.chosen5()).containsExactly(
-                new Card(Rank.ACE, Suit.SPADES),
-                new Card(Rank.KING, Suit.HEARTS),
                 new Card(Rank.JACK, Suit.CLUBS),
-                new Card(Rank.NINE, Suit.DIAMONDS),
-                new Card(Rank.SEVEN, Suit.SPADES)
+                new Card(Rank.JACK, Suit.HEARTS),
+                new Card(Rank.ACE, Suit.DIAMONDS),
+                new Card(Rank.KING, Suit.HEARTS),
+                new Card(Rank.NINE, Suit.SPADES)
         );
     }
 }
