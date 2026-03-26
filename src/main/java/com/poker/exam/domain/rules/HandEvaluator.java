@@ -8,7 +8,13 @@ import java.util.Optional;
 public class HandEvaluator {
 
     private final List<CategoryEvaluator> evaluators = List.of(
-
+            new StraightFlushEvaluator(),
+            new FourOfAKindEvaluator(),
+            new FullHouseEvaluator(),
+            new FlushEvaluator(),
+            new StraightEvaluator(),
+            new ThreeOfAKindEvaluator(),
+            new TwoPairEvaluator(),
             new OnePairEvaluator(),
             new HighCardEvaluator()
     );
