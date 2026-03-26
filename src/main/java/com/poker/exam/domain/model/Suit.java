@@ -1,4 +1,5 @@
 package com.poker.exam.domain.model;
 
-public class Suit {
+public enum Suit {
+    HEARTS, DIAMONDS, CLUBS, SPADES
 }
