@@ -1,51 +1,25 @@
 package com.poker.exam.domain.rules;
 
 import com.poker.exam.domain.model.Card;
-import com.poker.exam.domain.model.Rank;
-
-import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
+import java.util.Optional;
 
 public class HandEvaluator {
 
+    private final List<CategoryEvaluator> evaluators = List.of(
+            new OnePairEvaluator(),
+            new HighCardEvaluator()
+    );
+
     public EvaluatedHand evaluate(List<Card> cards) {
-        Map<Rank, Long> rankCounts = cards.stream()
-                .collect(Collectors.groupingBy(Card::rank, Collectors.counting()));
-
-        boolean hasPair = rankCounts.values().stream().anyMatch(count -> count >= 2);
-
-        if (hasPair) {
-            Rank pairRank = rankCounts.entrySet().stream()
-                    .filter(entry -> entry.getValue() >= 2)
-                    .map(Map.Entry::getKey)
-                    .max(Comparator.comparingInt(Rank::getValue))
-                    .orElseThrow();
-
-            List<Card> pairCards = cards.stream()
-                    .filter(c -> c.rank() == pairRank)
-                    .limit(2)
-                    .toList();
-
-            List<Card> kickers = cards.stream()
-                    .filter(c -> c.rank() != pairRank)
-                    .sorted(Comparator.comparingInt((Card c) -> c.rank().getValue()).reversed())
-                    .limit(3)
-                    .toList();
-
-            List<Card> best5 = new ArrayList<>(pairCards);
-            best5.addAll(kickers);
-
-            return new EvaluatedHand(HandCategory.ONE_PAIR, best5);
+        for (CategoryEvaluator evaluator : evaluators) {
+            Optional<EvaluatedHand> result = evaluator.evaluate(cards);
+            if (result.isPresent()) {
+                return result.get();
+            }
         }
 
-        List<Card> best5 = cards.stream()
-                .sorted(Comparator.comparingInt((Card c) -> c.rank().getValue()).reversed())
-                .limit(5)
-                .toList();
-
-        return new EvaluatedHand(HandCategory.HIGH_CARD, best5);
+        // Théoriquement impossible car HighCard matche toujours
+        throw new IllegalStateException("Impossible d'évaluer la main");
     }
 }
