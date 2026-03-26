@@ -13,4 +13,16 @@ public enum Rank {
     public int getValue() {
         return value;
     }
+
+    public static Rank fromValue(int value) {
+        for (Rank rank : values()) {
+            if (rank.value == value) {
+                return rank;
+            }
+        }
+        if (value == 1) {
+            return ACE;
+        }
+        throw new IllegalArgumentException("Unknown rank value: " + value);
+    }
 }
