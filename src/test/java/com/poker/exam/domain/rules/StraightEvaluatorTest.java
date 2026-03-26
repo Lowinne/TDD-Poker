@@ -9,57 +9,57 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-class StraightEvaluatorTest {
+class StraightFlushEvaluatorTest {
 
     @Test
-    void shouldDetectAceLowStraight() {
+    void shouldDetectStraightFlush() {
         List<Card> cards = List.of(
-                new Card(Rank.ACE, Suit.CLUBS),
-                new Card(Rank.TWO, Suit.DIAMONDS),
-                new Card(Rank.THREE, Suit.HEARTS),
-                new Card(Rank.FOUR, Suit.SPADES),
-                new Card(Rank.FIVE, Suit.CLUBS),
-                new Card(Rank.KING, Suit.DIAMONDS),
-                new Card(Rank.NINE, Suit.HEARTS)
+                new Card(Rank.NINE, Suit.HEARTS),
+                new Card(Rank.TEN, Suit.HEARTS),
+                new Card(Rank.JACK, Suit.HEARTS),
+                new Card(Rank.QUEEN, Suit.HEARTS),
+                new Card(Rank.KING, Suit.HEARTS),
+                new Card(Rank.TWO, Suit.CLUBS),
+                new Card(Rank.THREE, Suit.DIAMONDS)
         );
 
-        StraightEvaluator evaluator = new StraightEvaluator();
+        StraightFlushEvaluator evaluator = new StraightFlushEvaluator();
 
         EvaluatedHand result = evaluator.evaluate(cards).orElseThrow();
 
-        assertThat(result.category()).isEqualTo(HandCategory.STRAIGHT);
+        assertThat(result.category()).isEqualTo(HandCategory.STRAIGHT_FLUSH);
         assertThat(result.chosen5()).containsExactly(
-                new Card(Rank.FIVE, Suit.CLUBS),
-                new Card(Rank.FOUR, Suit.SPADES),
-                new Card(Rank.THREE, Suit.HEARTS),
-                new Card(Rank.TWO, Suit.DIAMONDS),
-                new Card(Rank.ACE, Suit.CLUBS)
+                new Card(Rank.KING, Suit.HEARTS),
+                new Card(Rank.QUEEN, Suit.HEARTS),
+                new Card(Rank.JACK, Suit.HEARTS),
+                new Card(Rank.TEN, Suit.HEARTS),
+                new Card(Rank.NINE, Suit.HEARTS)
         );
     }
 
     @Test
-    void shouldDetectAceHighStraight() {
+    void shouldTreatRoyalFlushAsBestStraightFlush() {
         List<Card> cards = List.of(
-                new Card(Rank.TEN, Suit.CLUBS),
-                new Card(Rank.JACK, Suit.DIAMONDS),
-                new Card(Rank.QUEEN, Suit.HEARTS),
+                new Card(Rank.TEN, Suit.SPADES),
+                new Card(Rank.JACK, Suit.SPADES),
+                new Card(Rank.QUEEN, Suit.SPADES),
                 new Card(Rank.KING, Suit.SPADES),
-                new Card(Rank.ACE, Suit.CLUBS),
-                new Card(Rank.THREE, Suit.DIAMONDS),
-                new Card(Rank.TWO, Suit.HEARTS)
+                new Card(Rank.ACE, Suit.SPADES),
+                new Card(Rank.TWO, Suit.CLUBS),
+                new Card(Rank.THREE, Suit.DIAMONDS)
         );
 
-        StraightEvaluator evaluator = new StraightEvaluator();
+        StraightFlushEvaluator evaluator = new StraightFlushEvaluator();
 
         EvaluatedHand result = evaluator.evaluate(cards).orElseThrow();
 
-        assertThat(result.category()).isEqualTo(HandCategory.STRAIGHT);
+        assertThat(result.category()).isEqualTo(HandCategory.STRAIGHT_FLUSH);
         assertThat(result.chosen5()).containsExactly(
-                new Card(Rank.ACE, Suit.CLUBS),
+                new Card(Rank.ACE, Suit.SPADES),
                 new Card(Rank.KING, Suit.SPADES),
-                new Card(Rank.QUEEN, Suit.HEARTS),
-                new Card(Rank.JACK, Suit.DIAMONDS),
-                new Card(Rank.TEN, Suit.CLUBS)
+                new Card(Rank.QUEEN, Suit.SPADES),
+                new Card(Rank.JACK, Suit.SPADES),
+                new Card(Rank.TEN, Suit.SPADES)
         );
     }
 }
